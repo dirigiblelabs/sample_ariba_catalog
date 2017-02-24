@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="page">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="">
+<meta name="author" content="">
+
+<title>Catalog Search</title>
+
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
+<style>
+.selected-true {
+	background-color: #428bca;
+	color: white;
+}
+</style>
+</head>
+<body style="margin-left: 20px">
+
+	<div id="wrap" ng-controller="ListAndDetailsController">
+		<div class="row">
+			<div class="col-lg-12">
+		    	<h1 class="page-header">Catalog</h1>
+			</div>
+		</div>
+		<div class="container">
+		
+			<form class="form-inline">
+				<div class="form-group mx-sm-3">
+					<label for"search" class="form-label">Search</label>
+					<input id="search" type="text" class="form-control" ng-model="searchParameter" placeholder="Grainger"/>
+				</div>
+				<button type="button" class="btn btn-primary btn-sm" ng-click="searchCatalog()">Search</button>
+			</form>
+			<br><br>
+		
+			<table class="table table-condensed">
+				<thead>
+					<tr>
+						<th>Image</th> 
+						<th>Part #</th> 
+						<th>Name</th> 
+						<th>Currency</th> 
+						<th>Price</th> 
+					</tr>
+				</thead>
+				<tbody>
+					<tr class="selected-{{entry._selected_}}" ng-repeat="entry in data" ng-click="showInfoForEntry(entry)">
+						<td><img ng-src={{entry.image}} width="200px"></img></td>
+						<td>{{entry.manufacturerPartId}}</td>
+						<td>{{entry.shortName}}</td>
+						<td class='text-center'>{{entry.currency}}</td>
+						<td class='text-right'>{{entry.amount}}</td>
+					</tr>
+				</tbody>
+			</table>
+			<div>
+				<div>View <select ng-model="viewby" ng-change="setItemsPerPage(viewby)"><option>10</option><option>20</option><option>50</option><option selected>100</option></select> records.<div>
+	    		<uib-pagination total-items="totalItems" ng-model="currentPage" ng-change="pageChanged()" class="pagination-sm" items-per-page="itemsPerPage" max-size="maxSize" boundary-links="true" force-ellipses="true" rotate="false"></uib-pagination>
+			</div>
+			
+			
+		</div>
+	</div>
+
+	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.7/angular.min.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.7/angular-resource.min.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.7/angular-animate.min.js"></script>
+	<script src="https://angular-ui.github.io/bootstrap/ui-bootstrap-tpls-0.14.3.js"></script>
+
+	<script type="text/javascript">
+		angular.module('page', ['ngAnimate', 'ui.bootstrap']);
+		angular.module('page').controller('ListAndDetailsController', function ($scope, $http) {
+			
+			var url = '../../js/sample_ariba_catalog/catalog_search.js'; // ?search=4WYR6 DP71 4KMR7
+			var urlSearch = url;
+
+			
+
+			$scope.showEntry = false;
+			$scope.selectedEntry;
+
+			$scope.showInfoForEntry = function(entry) {
+				if ($scope.selectedEntry === entry) {
+					$scope.showEntry = false;
+					$scope.selectedEntry = null;
+					entry._selected_ = false;
+				} else {
+					for(var i = 0 ; i < $scope.data.length; i ++){
+						$scope.data[i]._selected_ = false;
+					}
+					entry._selected_ = true;
+					$scope.showEntry = true;
+					$scope.selectedEntry = entry;
+				}
+			}
+			
+			$scope.formats = ['yyyy/MM/dd', 'dd-MMMM-yyyy', 'dd.MM.yyyy', 'shortDate'];
+  			$scope.format = $scope.formats[0];
+  			
+  			// pagination
+			$scope.viewby = 100;
+  			var urlCount = urlSearch + '&count';
+			$http.get(urlCount)
+				.success(function(count){
+					$scope.totalItems = count;
+				});
+  			
+  			$scope.currentPage = 1;
+  			$scope.itemsPerPage = $scope.viewby;
+  			$scope.maxSize = 5;
+			
+			$scope.setPage = function (pageNo) {
+			    $scope.currentPage = pageNo;
+			    $scope.pageChanged();
+			};
+			
+			$scope.pageChanged = function() {
+				var urlLimit = urlSearch + '&offset=' + ($scope.viewby*($scope.currentPage-1) + '&limit=' + $scope.viewby);
+				$http.get(urlLimit)
+					.success(function(data){
+						$scope.data = data;
+					});
+			};
+			
+			$scope.setItemsPerPage = function(num) {
+			  	$scope.itemsPerPage = num;
+			  	$scope.setPage(1);
+			};
+			
+			$scope.searchCatalog = function(){
+				urlSearch = url + "?search=" + $scope.searchParameter;
+	        	$http.get(urlSearch ,$scope.entity)
+	        	.success(function(data){
+	            	$scope.data = data;
+	                $scope.errorMessage = null;
+				}).error(function(response){
+	            	$scope.errorMessage = response.err.message;
+				});
+			}
+  			
+		});
+	</script>
+
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+	
+</body>
+</html>
+			
+			
+			
