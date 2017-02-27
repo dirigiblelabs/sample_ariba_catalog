@@ -30,7 +30,7 @@
 			<form class="form-inline">
 				<div class="form-group mx-sm-3">
 					<label for"search" class="form-label">Search</label>
-					<input id="search" type="text" class="form-control" ng-model="searchParameter" placeholder="Grainger"/>
+					<input id="search" type="text" class="form-control" ng-model="searchParameter" ng-keyup="$event.keyCode == 13 && searchCatalog()" placeholder="Grainger"/>
 				</div>
 				<button type="button" class="btn btn-primary btn-sm" ng-click="searchCatalog()">Search</button>
 			</form>
