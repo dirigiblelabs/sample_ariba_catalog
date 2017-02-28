@@ -63,11 +63,11 @@
 			$scope.login = function(){
 				$scope.dataLoading = true;
 				urlSearch = url + "?search=";
+				localStorage.setItem("user", $scope.data.username);
+	        	localStorage.setItem("password", $scope.data.password);
 	        	$http.get(urlSearch ,{params:{ "user": $scope.data.username, "password": $scope.data.password }})
 	        	.success(function(data){
 	        		if(data.includes("MatchAll")){
-	        			 localStorage.setItem("user", $scope.data.username);
-	        			 localStorage.setItem("password", $scope.data.password);
 	        			 $scope.dataLoading = false;
 	        			 $window.location="/services/web/sample_ariba_catalog/catalog_search.html";
         			} else{
