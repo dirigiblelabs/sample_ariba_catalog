@@ -20,7 +20,6 @@ if (search === null) {
  	var server = "<server>";
  	var instance = "<instance>";
 
-	console.log(login + " " + password);
 	var count = request.getParameter("count");
 	var requestMessage = soap.createMessage();
 	var part = requestMessage.getPart();
