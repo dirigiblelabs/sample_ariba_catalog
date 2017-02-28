@@ -19,7 +19,7 @@
 </head>
 <body style="margin-left: 20px">
 
-	<div id="wrap" ng-controller="ListAndDetailsController">
+	<div id="wrap" ng-controller="second">
 		<div class="row">
 			<div class="col-lg-12">
 		    	<h1 class="page-header">Catalog</h1>
@@ -33,6 +33,7 @@
 					<input id="search" type="text" class="form-control" ng-model="searchParameter" ng-keyup="$event.keyCode == 13 && searchCatalog()" placeholder="Grainger"/>
 				</div>
 				<button type="button" class="btn btn-primary btn-sm" ng-click="searchCatalog()">Search</button>
+				<img ng-if="dataLoading" src="data:image/gif;base64,R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAGJiYoKCgpKSkiH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA==" />
 			</form>
 			<br><br>
 		
@@ -72,16 +73,13 @@
 
 	<script type="text/javascript">
 		angular.module('page', ['ngAnimate', 'ui.bootstrap']);
-		angular.module('page').controller('ListAndDetailsController', function ($scope, $http) {
+		angular.module('page').controller('second', function ($scope, $http) {
 			
 			var url = '../../js/sample_ariba_catalog/catalog_search.js'; // ?search=4WYR6 DP71 4KMR7
 			var urlSearch = url;
-
 			
-
 			$scope.showEntry = false;
 			$scope.selectedEntry;
-
 			$scope.showInfoForEntry = function(entry) {
 				if ($scope.selectedEntry === entry) {
 					$scope.showEntry = false;
@@ -131,11 +129,14 @@
 			};
 			
 			$scope.searchCatalog = function(){
+				$scope.dataLoading = true;
 				urlSearch = url + "?search=" + $scope.searchParameter;
-	        	$http.get(urlSearch ,$scope.entity)
+
+	        	$http.get(urlSearch ,{params:{user:localStorage.getItem("user"), password:localStorage.getItem("password")}})
 	        	.success(function(data){
 	            	$scope.data = data;
 	                $scope.errorMessage = null;
+	                $scope.dataLoading = false;
 				}).error(function(response){
 	            	$scope.errorMessage = response.err.message;
 				});
@@ -149,6 +150,3 @@
 	
 </body>
 </html>
-			
-			
-			
