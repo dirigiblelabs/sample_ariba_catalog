@@ -14,11 +14,11 @@ if (search === null) {
 	response.flush();
 	response.close();
 } else {
-
+	
 	var vrealm = "<vrealm>";
- 	var userId = "<userid>";
- 	var server = "<server>";
- 	var instance = "<instance>";
+	var userId = "<userid>";
+	var server = "<server>";
+	var instance = "<instance>";
 
 	var count = request.getParameter("count");
 	var requestMessage = soap.createMessage();
@@ -95,7 +95,7 @@ if (search === null) {
 		
 	}
 	catch(err) {
-		response.println("Unauthorized");
+		response.print("Unauthenticated");
 		response.flush();
 		response.close();
 	}

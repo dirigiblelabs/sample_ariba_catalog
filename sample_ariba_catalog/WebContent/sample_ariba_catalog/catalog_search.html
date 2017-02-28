@@ -73,7 +73,7 @@
 
 	<script type="text/javascript">
 		angular.module('page', ['ngAnimate', 'ui.bootstrap']);
-		angular.module('page').controller('second', function ($scope, $http) {
+		angular.module('page').controller('second', function ($scope, $http, $window) {
 			
 			var url = '../../js/sample_ariba_catalog/catalog_search.js'; // ?search=4WYR6 DP71 4KMR7
 			var urlSearch = url;
@@ -134,6 +134,10 @@
 
 	        	$http.get(urlSearch ,{params:{user:localStorage.getItem("user"), password:localStorage.getItem("password")}})
 	        	.success(function(data){
+	        		if(JSON.stringify(data).includes("Unauthenticated")){
+	        			$window.location="/services/web/sample_ariba_catalog/login.html";
+        			}
+
 	            	$scope.data = data;
 	                $scope.errorMessage = null;
 	                $scope.dataLoading = false;
